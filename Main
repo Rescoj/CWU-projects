@@ -1,0 +1,29 @@
+public class Main
+{
+    public static void main(String[] Args)
+    {
+        DoublyLInkedList list = new DoublyLInkedList();
+        DoublyLInkedList stringList = new DoublyLInkedList();
+        stringList.insertAtIndex(2,"car");
+        stringList.insertAtFront("house");
+        stringList.insertAtEnd("apartment");
+        list.insertAtIndex(0,5);
+        list.insertAtIndex(1,7);
+        list.insertAtIndex(2,9);
+        list.insertAtIndex(3,11);
+        list.insertAtIndex(4,13);
+        list.insertAtIndex(5,15);
+        list.insertAtIndex(6,17);
+        list.insertAtIndex(7,19);
+        list.insertAtIndex(8,21);
+        list.insertAtIndex(9,23);
+
+        list.insertAtEnd(25);
+        list.insertAtEnd(27);
+        System.out.println(list.size());
+        System.out.println(list.get(11));
+        System.out.println(list.get(12));
+        System.out.println(list.toString());
+        System.out.println(stringList.toString());
+    }
+}
