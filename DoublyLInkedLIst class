@@ -1,0 +1,182 @@
+public class DoublyLInkedList<T,K>
+{
+    int length;
+    Node head;
+    Node tail;
+    public int size()
+    {
+        return length;
+    }
+    public void insertAtEnd(T data)
+    {
+        Node insertNode = new Node(data);
+        {
+            if(head == null)
+            {
+                head = insertNode;
+                tail = insertNode;
+            }
+            else
+            {
+                Node temp = head;
+                while (temp.next != null)
+                {
+                    temp = temp.next;
+                }
+                temp.next = insertNode;
+                tail = insertNode;
+            }
+        }
+        length++;
+    }
+    public void insertAtFront(T data)
+    {
+        Node insertNode = new Node(data);
+        if(head == null)
+        {
+            head = insertNode;
+            tail = insertNode;
+        }
+        head.previous = insertNode;
+        insertNode.next = head;
+        head = insertNode;
+        length++;
+    }
+    public void insertAtIndex(int index,T data)
+    {
+        Node temp = head;
+        Node insertNode = new Node(data);
+        int counter = 0;
+        if (head == null)
+        {
+            head = insertNode;
+            tail = insertNode;
+            length++;
+            return;
+        }
+        while (counter < index - 1)
+        {
+            temp = temp.next;
+            counter++;
+        }
+        insertNode.next = temp.next;
+        insertNode.previous = temp;
+        temp.next = insertNode;
+        if (counter >= length - 1)
+        {
+            tail = temp.next;
+        }
+        length++;
+    }
+    public void set (int index, T data)
+    {
+        Node temp = head;
+        int counter = 0;
+        while (counter < index - 1)
+        {
+            temp = temp.next;
+            counter++;
+        }
+        temp.data = data;
+        System.out.println(temp.data);
+    }
+    public <T> T get(int index)
+    {
+        Node temp = head;
+        int counter = 0;
+        while (counter < index - 1)
+        {
+            temp = temp.next;
+            counter++;
+        }
+        /* how do i return a generic data type */
+        return (T) temp.data;
+
+    }
+    public <T> int contains(T key)
+    {
+        Node temp = head;
+        int counter = 0;
+        while (temp != null)
+        {
+            System.out.println(temp.data + " " + key);
+            if (key.equals(temp.data))
+            {
+                System.out.println("key found!");
+                System.out.println("at index " + (counter+1));
+                return counter + 1;
+            }
+            else
+            {
+                temp = temp.next;
+                counter++;
+            }
+        }
+        return -1;
+    }
+    public void removeByIndex(int index)
+    {
+        Node temp = head;
+        Node previousNode = temp;
+        int counter = 0;
+        if (index == 1)
+        {
+            head = temp.next;
+            length--;
+            return;
+        }
+        while (temp!=null)
+        {
+            if (counter == index - 1)
+            {
+                previousNode.next = temp.next;
+                length--;
+                return;
+            }
+            previousNode = temp;
+            temp = temp.next;
+            counter++;
+        }
+        length--;
+    }
+    public void removeByKey(T key)
+    {
+        Node temp = head;
+        Node previous = temp;
+        if (key.equals(head.data))
+        {
+            System.out.println("key found!");
+            head = head.next;
+            length--;
+            return;
+        }
+        while (temp != null)
+        {
+            if (key.equals(temp.data))
+            {
+                System.out.println("key found!");
+                previous.next = temp.next;
+                length--;
+                return;
+            }
+            previous = temp;
+            temp = temp.next;
+
+        }
+    }
+    @Override
+    public String toString()
+    {
+        Node temp = head;
+        String output = "";
+        output = output + temp.data;
+        temp = temp.next;
+        while (temp != null)
+        {
+            output = output + ", " + temp.data;
+            temp = temp.next;
+        }
+        return output;
+    }
+
+}
