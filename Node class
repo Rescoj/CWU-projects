@@ -1,0 +1,11 @@
+public class Node <T,K>
+{
+    T data;
+    Node previous;
+    Node next;
+    public Node(T inputdata)
+    {
+        this.data = inputdata;
+        this.next = null;
+    }
+}
