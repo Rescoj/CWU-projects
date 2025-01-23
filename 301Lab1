@@ -106,8 +106,38 @@ public class Lab1
      */
     private static int problem2Iterative(Node root, int min, int max)
     {
-// Implement me!
-        return 0;
+
+        //declaring variables
+        Stack <Node> rights = new Stack();
+        int sum = 0;
+        while (0 == 0)
+        {
+            //adding key to sum if within range
+            if (root.key <= max && root.key >= min)
+            {
+                sum = sum + root.key;
+            }
+
+            //getting instances of right
+            if (root.right != null)
+            {
+                rights.push(root.right);
+            }
+
+            //traversing down a right subtree
+            if (root.left == null && !rights.isEmpty())
+            {
+                root = rights.pop();
+                continue;
+            }
+
+            //reaching the end of the tree
+            if (root.left == null && rights.isEmpty())
+            {
+                return sum;
+            }
+            root = root.left;
+        }
     }
     /**
      * Problem 2: Determine the sum of all node's keys between min and max
