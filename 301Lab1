@@ -85,24 +85,15 @@ public class Lab1
      */
     private static boolean problem1Recursive(Node t1, Node t2)
     {
-        if (t1 == null)
-        {
-            return false;
-        }
         if (t2 == null)
         {
-            return false;
-        }
-        if (t1.key == t2.key)
-        {
-            problem1Recursive(t1,t2.left);
-            problem1Recursive(t1,t2.right);
             return true;
         }
-        problem1Recursive(t1.left,t2);
-        problem1Recursive(t1.right,t2);
-        System.out.println(t1.key + " = " + t2.key);
-        return false;
+        if (!find(t1, t2.key))
+        {
+            return false;
+        }
+        return problem1Recursive(t1,t2.left) && problem1Recursive(t1,t2.right);
     }
     /**
      * Problem 2: Determine the sum of all node's keys between min and max
