@@ -85,6 +85,8 @@ public class Lab1
      */
     private static boolean problem1Recursive(Node t1, Node t2)
     {
+        
+        //base cases
         if (t2 == null)
         {
             return true;
@@ -93,6 +95,8 @@ public class Lab1
         {
             return false;
         }
+        
+        //recursive calls returns true if we have branched through entire tree
         return problem1Recursive(t1,t2.left) && problem1Recursive(t1,t2.right);
     }
     /**
