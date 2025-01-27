@@ -486,7 +486,6 @@ public class Lab1
 
             if (!passed)
             {
-                System.out.println("Test " + i + " failed!" + (exce ? " (Exception)" : ""));
 
                 if (prob == 1)
                 {
