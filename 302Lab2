@@ -1,0 +1,251 @@
+import java.util.*;
+public class BST
+{
+    /**
+     * Problem: Perform rotations on tree1 to make it equivalent to tree2.
+     */
+    public static void problem(BST tree1, BST tree2)
+    {
+
+        //declaring variables
+        Stack <Node> rights = new Stack<>();
+        Stack <Node> rights2 = new Stack<>();
+        Node treeOne = tree1.root;
+        Node treeTwo = tree2.root;
+
+        //trees are empty, no point in comparing
+        if (tree2.root == null)
+        {
+            return;
+        }
+        while (1 == 1)
+        {
+
+            //Continuing down right sub-branch
+            if (treeOne == null && !rights.isEmpty())
+            {
+                treeOne = rights.pop();
+                treeTwo = rights2.pop();
+            }
+
+            //End of comparison
+            if (treeOne == null && rights.isEmpty())
+            {
+                break;
+            }
+
+            //In the case that our current node does not match Tree2, we need to rotate
+            if (treeOne.key != treeTwo.key)
+            {
+
+                //This while loop is necessary to prevent "flip-flop" rotations
+                //Particularly the case when the target key is less than our current node's key
+                //But after rotation our target key becomes greater than current node's key causing an infinite loop
+                //This while loop rotates the key we want so that it is a direct descendant of our current node.
+                while (tree1.find(treeTwo.key).parent.key != treeOne.key)
+                {
+                    if (tree1.find(treeTwo.key).parent.key < treeTwo.key)
+                    {
+                        tree1.rotateL(tree1.find(treeTwo.key).parent);
+                    }
+                    else
+                    {
+                        tree1.rotateR(tree1.find(treeTwo.key).parent);
+                    }
+                }
+
+                //Rotation that places the node in the direction of the correct position
+                if (treeOne.key < treeTwo.key)
+                {
+                    tree1.rotateL(treeOne);
+                }
+                else
+                {
+                    tree1.rotateR(treeOne);
+                }
+
+                //restarting tree traversal to ensure accuracy
+                treeOne = tree1.root;
+                treeTwo = tree2.root;
+                rights.clear();
+                rights2.clear();
+                continue;
+            }
+
+            //gathering instances of right subtrees
+            if (treeOne.right != null)
+            {
+                rights.push(treeOne.right);
+                rights2.push(treeTwo.right);
+            }
+
+            //continuing down the left subtree
+            treeOne = treeOne.left;
+            treeTwo = treeTwo.left;
+        }
+    }
+    // ---------------------------------------------------------------------
+// Do not change any of the code below!
+    private class Node
+    {
+        public Node left = null;
+        public Node right = null;
+        public Node parent = null;
+        public int key;
+        public Node(int key)
+        {
+            this.key = key;
+        }
+    }
+    private Node root = null;
+    public int getRootKey()
+    {
+        return root.key;
+    }
+    private Node find(int key)
+    {
+        for (Node cur = root; cur != null;)
+        {
+            if (key < cur.key)
+            {
+                cur = cur.left;
+            }
+            else if (key == cur.key)
+            {
+                return cur;
+            }
+            else // key > cur.key
+            {
+                cur = cur.right;
+            }
+        }
+        return null;
+    }
+    // x y
+    // / \ / \
+    // a y => x c
+    // / \ / \
+    // b c a b
+    private void rotateL(Node xNode)
+    {
+        Node xPar = xNode.parent;
+        boolean isRoot = xPar == null;
+        boolean isLChild = !isRoot && xPar.left == xNode;
+        Node yNode = xNode.right;
+        Node beta = yNode.left;
+        if (isRoot) root = yNode;
+        else if (isLChild) xPar.left = yNode;
+        else xPar.right = yNode;
+        yNode.parent = xPar;
+        yNode.left = xNode;
+        xNode.parent = yNode;
+        xNode.right = beta;
+        if (beta != null) beta.parent = xNode;
+    }
+    // y x
+// / \ / \
+// x c => a y
+// / \ / \
+// a b b c
+    private void rotateR(Node yNode)
+    {
+        Node yPar = yNode.parent;
+        boolean isRoot = yPar == null;
+        boolean isLChild = !isRoot && yPar.left == yNode;
+        Node xNode = yNode.left;
+        Node beta = xNode.right;
+        if (isRoot) root = xNode;
+        else if (isLChild) yPar.left = xNode;
+        else yPar.right = xNode;
+        xNode.parent = yPar;
+        xNode.right = yNode;
+        yNode.parent = xNode;
+        yNode.left = beta;
+        if (beta != null) beta.parent = yNode;
+    }
+    public void insert(int key)
+    {
+        if (root == null)
+        {
+            root = new Node(key);
+            return;
+        }
+        Node par = null;
+        for (Node node = root; node != null;)
+        {
+            par = node;
+            if (key < node.key)
+            {
+                node = node.left;
+            }
+            else if (key > node.key)
+            {
+                node = node.right;
+            }
+            else // key == node.key
+            {
+// Nothing to do, because no value to update.
+                return;
+            }
+        }
+// Create node and set pointers.
+        Node newNode = new Node(key);
+        newNode.parent = par;
+        if (key < par.key) par.left = newNode;
+        else par.right = newNode;
+    }
+    public int[] getInOrder()
+    {
+        if (root == null) return new int[] { };
+        Stack<Node> stack = new Stack<Node>();
+        ArrayList<Integer> orderList = new ArrayList<Integer>();
+        for (Node node = root;;)
+        {
+            if (node == null)
+            {
+                if (stack.empty()) break;
+                node = stack.pop();
+                orderList.add(node.key);
+                node = node.right;
+            }
+            else
+            {
+                stack.push(node);
+                node = node.left;
+            }
+        }
+        int[] order = new int[orderList.size()];
+        for (int i = 0; i < order.length; i++)
+        {
+            order[i] = orderList.get(i);
+        }
+        return order;
+    }
+    public int[] getPreOrder()
+    {
+        if (root == null) return new int[] { };
+        Stack<Node> stack = new Stack<Node>();
+        ArrayList<Integer> orderList = new ArrayList<Integer>();
+        for (Node node = root;;)
+        {
+            if (node == null)
+            {
+                if (stack.empty()) break;
+                node = stack.pop();
+                node = node.right;
+            }
+            else
+            {
+                orderList.add(node.key);
+                stack.push(node);
+                node = node.left;
+            }
+        }
+        int[] order = new int[orderList.size()];
+        for (int i = 0; i < order.length; i++)
+        {
+            order[i] = orderList.get(i);
+        }
+        return order;
+    }
+}
