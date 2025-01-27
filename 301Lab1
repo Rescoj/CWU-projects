@@ -1,9 +1,10 @@
+import java.io.*;
 import java.util.*;
 public class Lab1
 {
+
     /**
-     * Problem 1: Determine if two given binary search trees store the same
-     numbers.
+     *  Problem 1: Determine if two given binary search trees store the same numbers.
      Iterative Solution
      */
     private static boolean problem1Iterative(Node t1, Node t2)
@@ -79,13 +80,11 @@ public class Lab1
         return true;
     }
     /**
-     * Problem 1: Determine if two given binary search trees store the same
-     numbers.
+     *  Problem 1: Determine if two given binary search trees store the same numbers.
      Recursive Solution
      */
     private static boolean problem1Recursive(Node t1, Node t2)
     {
-        
         //base cases
         if (t2 == null)
         {
@@ -95,19 +94,17 @@ public class Lab1
         {
             return false;
         }
-        
+
         //recursive calls returns true if we have branched through entire tree
         return problem1Recursive(t1,t2.left) && problem1Recursive(t1,t2.right);
     }
+
     /**
-     * Problem 2: Determine the sum of all node's keys between min and max
-     (inclusive).
+     *  Problem 2: Determine the sum of all node's keys between min and max (inclusive).
      Iterative Solution
      */
     private static int problem2Iterative(Node root, int min, int max)
     {
-
-        //declaring variables
         Stack <Node> rights = new Stack();
         int sum = 0;
         while (0 == 0)
@@ -139,9 +136,11 @@ public class Lab1
             root = root.left;
         }
     }
+
+
+
     /**
-     * Problem 2: Determine the sum of all node's keys between min and max
-     (inclusive).
+     *  Problem 2: Determine the sum of all node's keys between min and max (inclusive).
      Recursive Solution
      */
     private static int problem2Recursive(Node root, int min, int max)
@@ -167,18 +166,25 @@ public class Lab1
         sum = problem2Recursive(root.right, min, max) + sum;
         return sum;
     }
+
+
+
     // ---------------------------------------------------------------------
-// Do not change any of the code below!
+    // Do not change any of the code below!
+
     private static class Node
     {
         public Node left = null;
         public Node right = null;
+
         public int key;
+
         public Node(int key)
         {
             this.key = key;
         }
     }
+
     private static void insert(Node root, int key)
     {
         if (root == null)
@@ -186,6 +192,7 @@ public class Lab1
             root = new Node(key);
             return;
         }
+
         for (Node node = root;;)
         {
             if (key < node.key)
@@ -194,6 +201,7 @@ public class Lab1
                 {
                     node.left = new Node(key);
                 }
+
                 node = node.left;
             }
             else if (key > node.key)
@@ -202,24 +210,30 @@ public class Lab1
                 {
                     node.right = new Node(key);
                 }
+
                 node = node.right;
             }
             else // key = node.key
             {
-// Nothing to do, because no value to update.
+                // Nothing to do, because no value to update.
                 break;
             }
         }
     }
+
+
     private static boolean find(Node root, int key){
+
         if(root == null)
         {
             return false;
         }
+
         if(root.key == key)
         {
             return true;
         }
+
         if(key < root.key)
         {
             return find(root.left, key);
@@ -228,17 +242,23 @@ public class Lab1
         {
             return find(root.right, key);
         }
+
     }
+
+
     private static int[] getInOrder(Node root)
     {
         if (root == null) return new int[] { };
+
         Stack<Node> stack = new Stack<Node>();
         ArrayList<Integer> orderList = new ArrayList<Integer>();
+
         for (Node node = root;;)
         {
             if (node == null)
             {
                 if (stack.empty()) break;
+
                 node = stack.pop();
                 orderList.add(node.key);
                 node = node.right;
@@ -249,23 +269,29 @@ public class Lab1
                 node = node.left;
             }
         }
+
         int[] order = new int[orderList.size()];
         for (int i = 0; i < order.length; i++)
         {
             order[i] = orderList.get(i);
         }
+
         return order;
     }
+
     private static int[] getPreOrder(Node root)
     {
         if (root == null) return new int[] { };
+
         Stack<Node> stack = new Stack<Node>();
         ArrayList<Integer> orderList = new ArrayList<Integer>();
+
         for (Node node = root;;)
         {
             if (node == null)
             {
                 if (stack.empty()) break;
+
                 node = stack.pop();
                 node = node.right;
             }
@@ -276,29 +302,37 @@ public class Lab1
                 node = node.left;
             }
         }
+
         int[] order = new int[orderList.size()];
         for (int i = 0; i < order.length; i++)
         {
             order[i] = orderList.get(i);
         }
+
         return order;
     }
+
     private static int[] getPostOrder(Node root)
     {
         if (root == null) return new int[] { };
+
         Stack<Node> stack = new Stack<Node>();
         Stack<Integer> stackCtr = new Stack<Integer>();
         ArrayList<Integer> orderList = new ArrayList<Integer>();
+
         stack.push(root);
         stackCtr.push(0);
+
         while (!stack.empty())
         {
             int ctr = stackCtr.pop();
             Node node = stack.peek();
+
             if (ctr == 0)
             {
-// First visit.
+                // First visit.
                 stackCtr.push(1);
+
                 if (node.left != null)
                 {
                     stack.push(node.left);
@@ -307,9 +341,10 @@ public class Lab1
             }
             else if (ctr == 1)
             {
-// Second visit.
-// Left subtree done.
+                // Second visit.
+                // Left subtree done.
                 stackCtr.push(2);
+
                 if (node.right != null)
                 {
                     stack.push(node.right);
@@ -318,92 +353,116 @@ public class Lab1
             }
             else // ctr >= 2
             {
-// Third visit.
-// Right subtree done.
+                // Third visit.
+                // Right subtree done.
                 stack.pop();
                 orderList.add(node.key);
             }
         }
+
         int[] order = new int[orderList.size()];
         for (int i = 0; i < order.length; i++)
         {
             order[i] = orderList.get(i);
         }
+
         return order;
     }
+
     // ---------------------------------------------------------------------
+
     private static final int LabNo = 1;
     private static final String classNum = "CS 302";
+
     private static final Random rng = new Random(654321);
+
     public static void main(String args[])
     {
         System.out.println(classNum + " -- Lab " + LabNo);
+
         testProblems(1, 1);
         testProblems(1, 2);
         testProblems(2, 1);
         testProblems(2, 2);
     }
+
     private static boolean testProblem1(int[][] testCase, int style)
     {
         int[] tree1 = testCase[0];
         int[] tree2 = testCase[1];
+
         boolean solution = testCase[2][0] == 1;
+
         Node root1 = new Node(tree1[0]);
         Node root2 = new Node(tree2[0]);
+
         for (int i = 1; i < tree1.length; i++)
         {
             insert(root1, tree1[i]);
             insert(root2, tree2[i]);
         }
+
         boolean answer;
+
         if(style == 1)
         {
             answer = problem1Iterative(root1, root2);
         }else{
             answer = problem1Recursive(root1, root2);
         }
+
         return solution == answer;
     }
+
     private static boolean testProblem2(int[][] testCase, int style)
     {
         int[] tree = testCase[0];
         int[] range = testCase[1];
         int solution = testCase[2][0];
+
         Node root = new Node(tree[0]);
+
         for (int i = 1; i < tree.length; i++)
         {
             insert(root, tree[i]);
         }
+
         int answer;
+
         if(style == 1)
         {
             answer = problem2Iterative(root, range[0], range[1]);
         }else{
             answer = problem2Recursive(root, range[0], range[1]);
         }
+
         return answer == solution;
     }
+
     private static void testProblems(int prob, int style)
     {
         int noOfLines = 100000;
+
         System.out.println("-- -- -- -- --");
+
         switch (style)
         {
             case 1:
-                System.out.println(noOfLines + " test cases for problem " + prob
-                        + " iterative solution.");
+                System.out.println(noOfLines + " test cases for problem " + prob + " iterative solution.");
                 break;
             case 2:
-                System.out.println(noOfLines + " test cases for problem " + prob
-                        + " recursive solution.");
+                System.out.println(noOfLines + " test cases for problem " + prob + " recursive solution.");
                 break;
         }
+
         boolean passedAll = true;
+
         for (int i = 1; i <= noOfLines; i++)
         {
             boolean passed = false;
             boolean exce = false;
             int[][] testCase = null;
+
             try
             {
                 switch (prob)
@@ -412,6 +471,7 @@ public class Lab1
                         testCase = createProblem1(i);
                         passed = testProblem1(testCase, style);
                         break;
+
                     case 2:
                         testCase = createProblem2(i);
                         passed = testProblem2(testCase, style);
@@ -420,70 +480,81 @@ public class Lab1
             }
             catch (Exception ex)
             {
-                System.out.println(ex);
                 passed = false;
                 exce = true;
             }
+
             if (!passed)
             {
                 System.out.println("Test " + i + " failed!" + (exce ? " (Exception)" : ""));
+
                 if (prob == 1)
                 {
-                    System.out.println(" tree 1: " +
-                            Arrays.toString(testCase[0]));
-                    System.out.println(" tree 2: " +
-                            Arrays.toString(testCase[1]));
+                    System.out.println("  tree 1: " + Arrays.toString(testCase[0]));
+                    System.out.println("  tree 2: " + Arrays.toString(testCase[1]));
                 }
                 else
                 {
-                    System.out.println(" tree: " +
-                            Arrays.toString(testCase[0]));
-                    System.out.println(" range: " +
-                            Arrays.toString(testCase[1]));
+                    System.out.println("    tree: " + Arrays.toString(testCase[0]));
+                    System.out.println("   range: " + Arrays.toString(testCase[1]));
                 }
                 passedAll = false;
                 break;
             }
         }
+
         if (passedAll)
         {
             System.out.println("All test passed.");
         }
+
     }
+
     private static void shuffle(int[] arr)
     {
         for (int i = 0; i < arr.length; i++)
         {
             int rndInd = rng.nextInt(arr.length - i) + i;
+
             int tmp = arr[i];
             arr[i] = arr[rndInd];
             arr[rndInd] = tmp;
         }
     }
+
     private static int[] getRandomNumbers(int size)
     {
         int maxSize = size * 10;
+
         int[] integers = new int[maxSize];
         for (int i = 0; i < maxSize; i++)
         {
             integers[i] = i;
         }
+
         shuffle(integers);
+
         return Arrays.copyOf(integers, size);
     }
+
     private static int[][] createProblem1(int max)
     {
         int maxSize = max < 250 ? max : 250;
         int size = rng.nextInt(maxSize) + 5;
+
         int equal = rng.nextInt(2);
+
         int[] tree1 = getRandomNumbers(size);
         int[] tree2 = tree1.clone();
+
         if (equal == 0)
         {
             int ind = rng.nextInt(tree1.length);
             tree1[ind]+=6543;
         }
+
         int chance = rng.nextInt(10);
+
         if(chance == 2)
         {
             int ind1 = rng.nextInt(tree1.length);
@@ -491,7 +562,10 @@ public class Lab1
             int temp = tree1[ind1];
             tree1[ind1] = tree1[ind2];
             tree1[ind2] = temp;
+
         }
+
+
         return new int[][]
                 {
                         tree1,
@@ -499,16 +573,23 @@ public class Lab1
                         new int[] { equal }
                 };
     }
+
     private static int[][] createProblem2(int max)
     {
         int maxSize = max < 250 ? max : 250;
         int size = rng.nextInt(maxSize) + 5;
+
         int[] keys = getRandomNumbers(2 * size);
+
         int minKey = keys[rng.nextInt(2 * size)];
         int maxKey = keys[rng.nextInt(2 * size)];
+
         shuffle(keys);
+
         int[] tree = Arrays.copyOf(keys, size);
+
         int sum = 0;
+
         for (int i = 0; i < tree.length; i++)
         {
             if (tree[i] >= minKey && tree[i] <= maxKey)
@@ -516,6 +597,7 @@ public class Lab1
                 sum += tree[i];
             }
         }
+
         return new int[][]
                 {
                         tree,
@@ -523,4 +605,5 @@ public class Lab1
                         new int[] { sum }
                 };
     }
+
 }
