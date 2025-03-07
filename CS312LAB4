@@ -1,0 +1,338 @@
+/*
+    Jonathan Rescorla
+    I pledge that this submission is solely my work, and that I have neither given, nor received help from anyone
+    49982379
+ */
+import java.io.*;
+import java.util.*;
+/**
+ * Driver Class
+ */
+public class Main
+{
+    /**
+     * Driver method
+     * @throws FileNotFoundException in the case that the file is not found.
+     */
+    public static void main(String [] args) throws FileNotFoundException {
+
+        //declaring variables
+        byte [] receivedCheck,transmitCheck,transmitWord,receivedWord;
+
+        //method calls
+        transmitWord = decodeTransmitFile();
+        transmitWord = reverseArray(transmitWord);
+        transmitCheck = reverseArray(getCheckBits(transmitWord));
+        receivedWord = reverseArray(decodeReceivedFile(transmitWord));
+        receivedCheck = reverseArray(getCheckBits(receivedWord));
+        calculateSyndrome(transmitCheck,receivedCheck);
+    }
+
+    /**
+     * Method to reverse byte arrays to correctly represent byte strings.
+     * Since arrays are built from the least significant bit to most significant bit
+     * and Byte strings are built from most significant bit to the least significant bit.
+     * Returns the mirrored array.
+     * @param arr represents the byte[] array to be mirrored.
+     * @return returns the mirrored byte[] array.
+     */
+    public static byte[] reverseArray (byte[] arr)
+    {
+        //declaring output
+        byte[] output = new byte[arr.length];
+
+        //mirroring array
+        for (int i = 0, j = arr.length - 1; i < arr.length; i++,j--)
+        {
+            output[j] = arr[i];
+        }
+        return output;
+    }
+
+    /**
+     * Method takes the entire byte string (represented as a byte array)
+     * and checks the indices that are powers of two to acquire the check bits.
+     * Returns a new byte array with appropriate values and length.
+     * @param arr represents the array to extract the check bits from.
+     * @return returns a new byte[] array representative of the check bits.
+     */
+    public static byte[] getCheckBits (byte[] arr)
+    {
+
+        //declaring output
+        byte [] output = new byte[getPowerOfTwo(arr.length) + 1];
+
+        //initialize the first index manually to avoid ArrayIndexOutOfBoundsExceptions in the loop
+        output[0] = arr[0];
+
+        //loop to index value that is at a power of two in the word array and appropriately place it in
+        //check bit array
+        for (int i = 1; i < output.length; i++)
+        {
+            output[i] = arr[calculatePowerOfTwo(2,i) - 1];
+        }
+        return output;
+    }
+
+    /**
+     * Simple test to check if the transmitted word and received word are of equal length,
+     * terminating if otherwise.
+     * @param checkR first array to be checked, the 'R' is for 'Received'
+     * @param checkS second array to be checked, the 'S' is for 'Sent'
+     */
+    public static void checkLengths (byte[] checkR, byte[] checkS)
+    {
+
+        //checking lengths of each array for equality, terminating if not.
+        if (checkR.length != checkS.length)
+        {
+            System.out.println("Files are not the same size!");
+            System.exit(0);
+        }
+    }
+
+    /**
+     * Method that decodes the received file, extracts the byte string, checks for equal length compared to the
+     * transmitted word, and formats output to the terminal.
+     * @param compare Transmitted word file so the lengths can be compared
+     * @return Returning the decoded Received file.
+     * @throws FileNotFoundException Exception handling in case the file is not found
+     */
+    public static byte[] decodeReceivedFile (byte[] compare) throws FileNotFoundException
+    {
+        //declaring variables
+        File myObj = new File("C:\\Users\\Nep Nep\\Desktop\\bin\\bin\\receivefile1.bin");
+        Scanner myReader = new Scanner(myObj);
+        String input = "";
+
+        //extracting file contents
+        while (myReader.hasNextLine())
+        {
+            input = myReader.nextLine();
+        }
+
+        //parsing String data into byte data
+        byte [] arr = new byte[input.length()];
+        for (int i = 0, j = 1; i < arr.length; i++,j++)
+        {
+            arr[i] = Byte.parseByte(input.substring(i,j));
+        }
+
+        //formatting and sending output to terminal
+        System.out.print("Received file content: ");
+        for (byte x : arr)
+        {
+            System.out.print(x);
+        }
+        byte[] checkBits = reverseArray(getCheckBits(reverseArray(arr)));
+        System.out.println("\nTotal number of bytes read: " + arr.length + " bytes");
+        checkLengths(compare,arr);
+        System.out.print("\nLocation of the k check bits are: ");
+        for (int i = 0; i < checkBits.length; i++)
+        {
+            System.out.print((calculatePowerOfTwo(2,i) - 1) +" ");
+        }
+        System.out.print("\nThe k check bit values are: "); toString(checkBits);
+        System.out.println("\n");
+        return arr;
+    }
+
+    /**
+     * Method that decodes the transmitted file into a byte[] array and formats output to the terminal.
+     * @return returns the decoded transmission file in a byte[] array.
+     * @throws FileNotFoundException Exception handling in case the file is not found.
+     */
+    public static byte[] decodeTransmitFile () throws FileNotFoundException
+    {
+
+        //declaring variables
+        File myObj = new File("C:\\Users\\Nep Nep\\Desktop\\bin\\bin\\transmitfile.bin");
+        Scanner myReader = new Scanner(myObj);
+        String input = "";
+
+        //extracting data to string
+        while (myReader.hasNextLine())
+        {
+            input = myReader.nextLine();
+        }
+
+        //parsing string into byte data and indexing into a byte[] array
+        byte [] arr = new byte[input.length()];
+        for (int i = 0, j = 1; i < arr.length; i++,j++)
+        {
+            arr[i] = Byte.parseByte(input.substring(i,j));
+        }
+
+        //formatting and sending output to terminal.
+        System.out.print("Transmitted file content: ");
+        for (byte x : arr)
+        {
+            System.out.print(x);
+        }
+        byte[] checkBits = reverseArray(getCheckBits(reverseArray(arr)));
+        System.out.println("\nTotal number of bytes read: " + arr.length + " bytes");
+        System.out.println("\nM data bits is: " + (arr.length - getPowerOfTwo(arr.length) - 1));
+        System.out.println("K check bits is: " + (getPowerOfTwo(arr.length) + 1));
+        System.out.print("\nLocation of the k check bits are: ");
+        for (int i = 0; i < checkBits.length; i++)
+        {
+            System.out.print((calculatePowerOfTwo(2,i) - 1) +" ");
+        }
+        System.out.print("\nThe k check bit values are: "); toString(checkBits);
+        System.out.println("\n");
+        return arr;
+    }
+
+    /**
+     * Method that calculates the syndrome word given two strings of check bits (represented as byte[] arrays).
+     * Also checks the parity of the syndrome word and branches accordingly.
+     * @param checkR Byte[] Array parameter for the Received word.
+     * @param checkS Byte[] Array parameter for the transmitted word.
+     */
+    public static void calculateSyndrome (byte[] checkR, byte[] checkS)
+    {
+
+        //declaring variables
+        byte [] syndrome = new byte[checkS.length];
+        int parity = 0;
+
+        //generating syndrome word with xor between the two byte[] arrays
+        for (int i = 0; i < checkR.length; i++)
+        {
+            syndrome [i] = xor(checkR[i],checkS[i]);
+        }
+
+        //getting instances of '1' in syndrome word
+        for (byte x : syndrome)
+        {
+            if (x == 1)
+            {
+                parity++;
+            }
+        }
+
+        //cases on the quantity of the parity variable
+        //parity = 0 means no error detected
+        //parity = 1 means an error in the check bits
+        //parity > 1 means an error has occurred in one of the data bits
+        if (parity == 0)
+        {
+            System.out.println("The syndrome word is: "); toString(syndrome);
+            System.out.println("No error detected in the received file");
+        } else if (parity == 1)
+        {
+            System.out.println("The syndrome word is: "); toString(syndrome);
+            System.out.println("Only one syndrome bit is set to 1. " +
+                    "The error bit is one of the check bits. No correction needed");
+        }
+        else
+        {
+            System.out.print("The syndrome word is: "); toString(syndrome);
+            System.out.println("\nThe location of the error bit in the received data is " +
+                    calculateBinaryToDecimal(syndrome));
+        }
+    }
+
+    /**
+     * Binary to decimal conversion which is needed to calculate the positions of the check bits.
+     * @param input Byte[] array input to calculate the arrays representation in decimal.
+     * @return Returns the summation of the binary values represented by the byte[] array.
+     */
+    public static int calculateBinaryToDecimal(byte[] input)
+    {
+
+        //declaring variables
+        int output = 0;
+        input = reverseArray(input);
+
+        //performing the summation of binary values
+        for (int i = 0; i < input.length; i++)
+        {
+            if (input[i] == 1)
+            {
+                output = output + calculatePowerOfTwo(2,i);
+            }
+        }
+        return output;
+    }
+
+    /**
+     * Method to calculate power of two given a base and power. Necessary to manipulate byte[] arrays.
+     * @param base Represents the base which always 2 in this case.
+     * @param power Represents the power and drives the counter for the loop.
+     * @return returns the decimal result of the operation.
+     */
+    public static int calculatePowerOfTwo(int base, int power)
+    {
+
+        //declaring variables
+        int output = base;
+
+        //power = 0 branch
+        if (power == 0)
+        {
+            return 1;
+        }
+
+        //product loop
+        while (power > 1)
+        {
+            output = output * base;
+            power--;
+        }
+        return output;
+    }
+
+    /**
+     * xor method quintessential for calculating the syndrome word.
+     * @param x represents the first bit, is interchangeable with 'y'
+     * @param y represents the second bit, is interchangeable with 'x'
+     * @return the result of the operation
+     */
+    public static byte xor (byte x, byte y)
+    {
+
+        //returning 0 if parameters are the same, xor property. Returning if otherwise.
+        if (x == y)
+        {
+            return 0;
+        }
+
+        else {return 1;}
+    }
+
+    /**
+     * Method that calculates the power of two equivalent given an input. Implemented to properly index the check bit
+     * array compared to the transmitted word array.
+     * @param input represents a power of two that isn't in the 2^x format.
+     * @return returns x.
+     */
+    public static int getPowerOfTwo (int input)
+    {
+
+        //declaring variables
+        int i = 0;
+
+        //loop to acquire the power of two
+        while (input > 1)
+        {
+            input = input / 2;
+            i++;
+        }
+        return i;
+    }
+
+    /**
+     * Method that outputs and formats the byte[] array to the terminal.
+     * @param input represents the byte[] array to be displayed to the terminal.
+     */
+    public static void toString (byte[] input)
+    {
+
+        //for-each loop to output each element in the byte[] array.
+        for (byte x : input)
+        {
+            System.out.print(x + " ");
+        }
+    }
+}
